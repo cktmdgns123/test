@@ -56,7 +56,7 @@ public class PixelPlayer13 extends Player {
      
      return new Point(yy,xx);
    }
-   public void wc(int y,int x,int turn,int stat,int depth)//5ÀÌ¸é ¾ÆÁ÷, 1ÀÌ¸é ½Â¸®,-1¸é ÆĞ¹è, 0ÀÌ¸é ºñ±è °í¹Î.
+   public void wc(int y,int x,int turn,int stat,int depth)//5ì´ë©´ ì•„ì§, 1ì´ë©´ ìŠ¹ë¦¬,-1ë©´ íŒ¨ë°°, 0ì´ë©´ ë¹„ê¹€ ê³ ë¯¼.
    {
 
      if(depth<6){
@@ -190,4 +190,4 @@ public class PixelPlayer13 extends Player {
        return c1;
      }
 
-}//´ÙÀÍ½ºÆ®¶ó ¿Ü¿ì±â
+}//ë‹¤ìµìŠ¤íŠ¸ë¼ ì™¸ìš°
