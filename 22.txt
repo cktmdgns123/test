@@ -1,1 +1,194 @@
-asdfasdfadsf
+
+import java.awt.*;
+import java.util.Random;
+
+public class PixelPlayer13 extends Player {
+
+  public static int SIZE_OF_BOARD=8;
+  public static long maxwin;
+  public static long tt;
+  public static int xx=0,yy=0;
+  public static int myturn;
+  public static int st=0;
+  public static int [][] vmap = new int[SIZE_OF_BOARD][SIZE_OF_BOARD];
+  
+   
+   PixelPlayer13(int[][] map) {super(map);}
+
+   public Point nextPosition(Point lastPosition) {  
+      int x = (int)lastPosition.getY(), y = (int)lastPosition.getX();
+       int ch=0;
+         for(int i=0;i<SIZE_OF_BOARD;i++){
+       for(int j=0;j<SIZE_OF_BOARD;j++){if(map[i][j]!=0){ch++;}}}
+       if(ch%2==0){myturn = 1;}
+       else {myturn = 2;}
+     maxwin=Long.MIN_VALUE;
+     
+     for(int i=0;i<SIZE_OF_BOARD;i++){
+       if(map[i][x]==0){
+       mapcopy();
+       vmap[i][x]=myturn;
+      if(isfour1(new Point(i,x),myturn)){return new Point(i,x);}
+       tt=0;
+       wc(i,x,3-myturn,5,0);
+
+         if(tt > maxwin){
+          maxwin=tt;
+          xx=x;yy=i;
+         }
+       System.out.println(i+" "+x+" "+tt+" "+maxwin);
+       vmap[i][x]=0;
+       }
+    
+       if(map[y][i]==0){
+       mapcopy();
+       vmap[y][i]=myturn;
+       if(isfour1(new Point(y,i),myturn)){return new Point(y,i);}
+       tt=0;
+       wc(y,i,3-myturn,5,0);
+         if(tt > maxwin){
+          maxwin=tt;
+          xx=i;yy=y;
+         }
+         System.out.println(y+" "+i+" "+tt+" "+maxwin);
+         vmap[y][i]=0;
+       }
+     }
+     
+     return new Point(yy,xx);
+   }
+   public void wc(int y,int x,int turn,int stat,int depth)//5이면 아직, 1이면 승리,-1면 패배, 0이면 비김 고민.
+   {
+
+     if(depth<6){
+     for(int i=0;i<SIZE_OF_BOARD;i++)
+     {
+       if(vmap[i][x]==0){
+         vmap[i][x]=turn;
+         if(stat!=5){tt+=stat;wc(x,i,3-turn,stat,depth+1);}
+         else{
+           if(isfour1(new Point(i,x),turn)){
+             if(turn == myturn ){tt++;wc(i,x,3-turn,1,depth+1);}
+             else{tt--;wc(i,x,3-turn,-1,depth+1);}}
+           else if(isdraw1(new Point(i,x))){wc(i,x,3-turn,0,depth+1);}
+           else{wc(i,x,3-turn,5,depth+1);}
+         }
+         vmap[i][x]=0;
+       }
+       if(vmap[y][i]==0){
+         vmap[y][i]=turn;
+         if(stat!=5){tt+=stat;wc(y,i,3-turn,stat,depth+1);}
+         else{
+           if(isfour1(new Point(y,i),turn)){
+             if(turn == myturn ){tt++;wc(y,i,3-turn,1,depth+1);}
+             else{tt--;wc(y,i,3-turn,-1,depth+1);}}
+           else if(isdraw1(new Point(y,i))){wc(y,i,3-turn,0,depth+1);}
+           else{wc(y,i,3-turn,5,depth+1);}
+         }
+         vmap[y][i]=0;
+       }
+     }
+     }
+
+   }
+   public static boolean isdraw1(Point dolPosition) {
+      int x = (int)dolPosition.getX(), y = (int)dolPosition.getY(), count = 0;
+
+         for(int i=0; i<SIZE_OF_BOARD; i++)
+         {
+            if( vmap[x][i] == 0)
+               count++;
+         }
+         for(int i=0; i<SIZE_OF_BOARD; i++)
+         {
+            if( vmap[i][y] == 0)
+               count++;
+         }
+      if( count == 0)
+         return true;
+
+      return false;
+   }
+
+   public static boolean isfour1(Point dolPosition, int who) {
+      int i;
+      int count = 0;
+      int x = (int)dolPosition.getX();
+      int y = (int)dolPosition.getY();
+
+      for( i = x - 3; i <= x + 3; i++ ) {
+         if ( i < 0 || i >= SIZE_OF_BOARD ) {
+            continue;
+         }
+         if ( vmap[i][y] == who ) {
+            count++;
+            if ( count == 4 ) {
+               return true;
+            }
+         } else {
+            count = 0;
+         }
+      }
+
+      count = 0;
+      for( i = y - 3; i <= y + 3; i++ ) {
+         if ( i < 0 || i >= SIZE_OF_BOARD ) {
+            continue;
+         }
+         if ( vmap[x][i] == who ) {
+            count++;
+            if ( count == 4 ) {
+               return true;
+            }
+         } else {
+            count = 0;
+         }
+      }
+
+      count = 0;
+      for( i = -3; i <= 3; i++ ) {
+         if ( x + i < 0 || y + i < 0 || x + i >= SIZE_OF_BOARD || y + i >= SIZE_OF_BOARD ) {
+            continue;
+         }
+         if ( vmap[x + i][y + i] == who ) {
+            count++;
+            if ( count == 4 ) {
+               return true;
+            }
+         } else {
+            count = 0;
+         }
+      }
+
+      count = 0;
+      for( i = -3; i <= 3; i++ ) {
+         if ( x + i < 0 || y - i < 0 || x + i >= SIZE_OF_BOARD || y - i >= SIZE_OF_BOARD ) {
+            continue;
+         }
+         if ( vmap[x + i][y - i] == who ) {
+            count++;
+            if ( count == 4 ) {
+               return true;
+            }
+         } else {
+            count = 0;
+         }
+      }    
+
+      return false;   
+   }
+
+   
+   
+   public void mapcopy(){
+            for(int i=0;i<SIZE_OF_BOARD;i++){
+       for(int j=0;j<SIZE_OF_BOARD;j++){vmap[i][j]=map[i][j];}}
+     }
+   public int mapcheck(){
+     int c1=0;
+            for(int i=0;i<SIZE_OF_BOARD;i++){
+       for(int j=0;j<SIZE_OF_BOARD;j++)if(vmap[i][j]==0){c1++;}}
+       return c1;
+     }
+
+}//다익스트라 외우
